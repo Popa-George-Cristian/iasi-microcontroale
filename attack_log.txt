@@ -1,0 +1,20 @@
+=== IDS Log - 2026-04-17 21:00:27 ===
+I (1441211) guardnet: Status: 2 clients | 0 blocked IPs | 0 attaI (4771264) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4801264) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4831264) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4861264) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4891264) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4921264) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4951265) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (4981265) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5011265) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5041265) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5071265) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5101266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5131266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5161266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5191266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5221266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5251266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5281266) guardnet: Status: 2 clients | 0 blocked IPs | 0 attacks detected
+I (5295035) esp_netif_lwip: DHCP server assigned IP to a client, IP is: 192.168.4.2

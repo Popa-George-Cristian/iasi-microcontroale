@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardNet IDS</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-box">
+            <div class="login-logo">
+                <span class="shield">&#128737;</span>
+                <h1>GuardNet</h1>
+            </div>
+            <p class="login-subtitle">Dashboard Login</p>
+            <input type="password" id="login-pass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+            <button class="btn-login" onclick="doLogin()">Login</button>
+            <div id="login-error" class="login-error"></div>
+        </div>
+    </div>
+
+    <div id="reconnect-banner" class="reconnect-banner" style="display:none">
+        Connection lost &mdash; reconnecting...
+    </div>
+
+    <header>
+        <div class="logo">
+            <span class="shield">&#128737;</span>
+            <h1>GuardNet</h1>
+            <span class="subtitle">TinyML Network IDS</span>
+        </div>
+        <div class="status-bar">
+            <span id="status-led" class="led green"></span>
+            <span id="uptime">Uptime: --</span>
+            <span id="sta-status">Upstream: --</span>
+            <span id="threshold-badge" class="threshold-badge">Threshold: 0.80</span>
+            <button class="btn btn-ids" id="ids-toggle" onclick="toggleIDS()">IDS: ON</button>
+            <button class="btn btn-block" id="block-toggle" onclick="toggleBlock()">Block: ON</button>
+            <button class="btn btn-logout" onclick="doLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="timeline-wrap">
+        <canvas id="timeline-canvas" width="900" height="80"></canvas>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-clients">0</div>
+            <div class="stat-label">Connected Clients</div>
+        </div>
+        <div class="stat-card alert">
+            <div class="stat-value" id="stat-attacks">0</div>
+            <div class="stat-label">Attacks Detected</div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-value" id="stat-blocked">0</div>
+            <div class="stat-label">IPs Blocked</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value stat-small" id="stat-inference">--</div>
+            <div class="stat-label">NN Inference</div>
+        </div>
+    </div>
+
+    <div class="panels">
+        <div class="panel">
+            <h2>Live Attack Feed <button class="btn btn-clear" onclick="clearAlerts()" style="float:right;font-size:0.75rem;padding:0.2rem 0.6rem;">Clear</button></h2>
+            <div class="table-wrap">
+                <table id="attack-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Source</th>
+                            <th>Target</th>
+                            <th>Type</th>
+                            <th>Confidence</th>
+                            <th>Origin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attack-body">
+                        <tr class="empty-row"><td colspan="6">No attacks detected</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div class="panel">
+                <h2>Connected Clients</h2>
+                <div id="clients-list" class="list-container">
+                    <div class="empty-msg">No clients connected</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Blocked IPs</h2>
+                <div id="blocked-list" class="list-container">
+                    <div class="empty-msg">No IPs blocked</div>
+                </div>
+                <div class="manual-block">
+                    <input type="text" id="block-ip-input" placeholder="Enter IP to block">
+                    <button onclick="manualBlock()">Block</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panels">
+        <div class="two-col">
+            <div class="panel">
+                <h2>WiFi Configuration</h2>
+                <div class="wifi-status" id="wifi-status">
+                    <span>Upstream: <strong id="wifi-ssid">Not configured</strong></span>
+                    <span id="wifi-conn-badge" class="badge badge-external">Disconnected</span>
+                    <button id="wifi-retry-btn" class="btn btn-retry" onclick="wifiRetry()" style="display:none">Retry</button>
+                </div>
+                <div class="wifi-form">
+                    <div class="wifi-ssid-row">
+                        <input type="text" id="wifi-ssid-input" placeholder="WiFi SSID">
+                        <button class="btn btn-scan" onclick="wifiScan()">Scan</button>
+                    </div>
+                    <div id="scan-results" class="scan-results" style="display:none"></div>
+                    <input type="password" id="wifi-pass-input" placeholder="Password">
+                    <div class="wifi-buttons">
+                        <button class="btn btn-connect" onclick="wifiConnect()">Connect</button>
+                        <button class="btn btn-danger" onclick="wifiForget()" id="forget-btn">Forget</button>
+                    </div>
+                    <div id="wifi-msg" class="wifi-msg"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Settings</h2>
+
+                <h3 class="settings-heading">Paranoia Level</h3>
+                <div class="paranoia-form">
+                    <div class="paranoia-row">
+                        <span class="paranoia-label-low">Chill</span>
+                        <input type="range" id="paranoia-slider" min="50" max="95" step="5" value="80"
+                               oninput="onParanoiaInput()" onchange="saveParanoia()">
+                        <span class="paranoia-label-high">Tinfoil</span>
+                    </div>
+                    <div class="paranoia-meta">
+                        <span id="paranoia-mood">Normal</span>
+                        <span class="paranoia-value">confidence &gt; <span id="paranoia-value">0.80</span></span>
+                    </div>
+                    <div id="paranoia-msg" class="wifi-msg"></div>
+                </div>
+
+                <h3 class="settings-heading">Block Timeout</h3>
+                <div class="settings-form">
+                    <div class="timeout-row">
+                        <input type="number" id="block-timeout-input" min="0" max="60" value="5" style="width:70px">
+                        <span class="timeout-label">minutes (0 = permanent)</span>
+                    </div>
+                    <button class="btn btn-connect" onclick="saveBlockTimeout()">Save</button>
+                    <div id="timeout-msg" class="wifi-msg"></div>
+                </div>
+
+                <h3 class="settings-heading">Change Dashboard Password</h3>
+                <div class="settings-form">
+                    <input type="password" id="old-pass" placeholder="Current password">
+                    <input type="password" id="new-pass" placeholder="New password (4-32 chars)">
+                    <button class="btn btn-connect" onclick="changePassword()">Change Password</button>
+                    <div id="pass-msg" class="wifi-msg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>GuardNet v1.0 &mdash; ESP32-S3 TinyML IDS &mdash; Competition Project</p>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>
